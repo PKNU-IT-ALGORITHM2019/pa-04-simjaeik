@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -35,6 +37,10 @@ public class Main {
 			else if(commandLine.equals("print")){
 				handlePrint();
 			}
+			else if(commandLine.equals("makefile")){
+				String fileName = commandLine.split(" ")[1];
+				handleMake(fileName);
+			}
 			else if(commandLine.equals("exit")){
 				break;
 			}
@@ -42,8 +48,30 @@ public class Main {
 	}
 
 	
+	private static void handleMake(String fileName) {
+		File file = new File(fileName);
+		FileWriter writer = null;
+		
+		try {
+			writer = new FileWriter(file, true);
+			for(int i = 0; i < MyLogData.size - 1; i++ )
+				writer.write(logData[i].toString());
+			System.out.println("file is made.");
+			writer.flush();
+		}	catch(IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(writer != null) writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
 	private static void handlePrint() {
-		for(int i = 0; i < MyLogData.size - 2; i++ )
+		for(int i = 0; i < MyLogData.size; i++ )
 			System.out.println(logData[i].toString());
 	}
 
@@ -52,9 +80,9 @@ public class Main {
 		option = option.substring(1);
 
 		if(option.equals("t"))
-			Arrays.sort(logData, 0, MyLogData.size-2, MyLogData.timeComparator);
+			Arrays.sort(logData, 0, MyLogData.size, MyLogData.timeComparator);
 		else if (option.equals("ip"))
-			Arrays.sort(logData, 0, MyLogData.size-2, MyLogData.ipComparator);
+			Arrays.sort(logData, 0, MyLogData.size, MyLogData.ipComparator);
 	}
 
 	
